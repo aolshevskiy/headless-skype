@@ -33,22 +33,23 @@ class SkypeInitializer {
 	}
 	public void initSkype() {
 		try {
-			if(!initRequired) {
-				Thread.sleep(3000);
-				return;
-			}		
+			//Wait for Skype to boot up
 			Thread.sleep(3000);
-			xte.xte("key Tab", "sleep 1", "key Tab", "str  ", "sleep 1", "str "+username, "key Tab", "str "+password, "key Tab", "str  ", "key Tab", "sleep 1", "key Tab", "str  ");			
+			if(!initRequired)
+				return;
+			//Click through terms and agreement and enter username and password, checking remember me
+			xte.xte("key Tab", "sleep 1", "key Tab", "str  ", "sleep 1", "str "+username, "key Tab", "str "+password, "key Tab", "str  ", "key Tab", "sleep 1", "key Tab", "str  ");
+			//Wait for auth to finish
 			Thread.sleep(10000);
 			final SettableFuture<String> result = SettableFuture.create();			
 			new Thread() {
 				public void run() {
-					result.set(client.invoke("NAME headlessskype"));					
+					result.set(client.invoke("NAME headlessskype")); //Request plugin authorization in background since this is blocking					
 				}
 			}.start();
-			Thread.sleep(1000);
-			xte.xte("str  ", "key Tab", "str  ");
-			if(!result.get().equals("OK"))
+			Thread.sleep(1000);//Wait for auth dialog invoked in background thread to appear
+			xte.xte("str  ", "key Tab", "str  ");//Click through auth dialog, checking remember my choice
+			if(!result.get().equals("OK"))//Verify that auth request returned ok
 				throw new RuntimeException("Failed to connect to Skype through DBus: NAME headlessskype -> "+result.get());
 		} catch (Exception e) {
 			throw Throwables.propagate(e);

@@ -34,7 +34,9 @@ class SkypeService extends AbstractExecutionThreadService {
 
 	@Override
 	protected void startUp() throws Exception {
-		displayProcess = new ProcessBuilder("Xvfb", display, "-screen", "0", "800x600x8").inheritIO().start();	
+		//decreased resolution seems to solve troubles with window activation
+		displayProcess = new ProcessBuilder("Xvfb", display, "-screen", "0", "800x600x8").inheritIO().start();
+		//first init step
 		initializer.initHome();
 		ProcessBuilder builder = new ProcessBuilder("skype").inheritIO();
 		Map<String, String> env = builder.environment();
