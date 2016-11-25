@@ -56,7 +56,7 @@ class SkypeInitializer {
 		}
 	}
 }
-
+//todo: please move class Xte to a separate file.
 class Xte {
 	private final String display;
 	@Inject
